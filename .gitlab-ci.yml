@@ -1,0 +1,33 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  before_script:
+    - whoami
+
+  script:
+    - cp -r * /var/www/dev9server.com/public_html/autotracker/
+    - cd /var/www/dev9server.com/public_html/autotracker/ && ls -la
+
+    # Set proper permissions
+    # - sudo chmod -R 775 storage/
+    # - sudo chmod -R 775 public/
+    # - sudo chmod -R 775 bootstrap/cache/
+
+    # Clear and cache Laravel configuration
+    # - php artisan config:clear
+    # - php artisan config:cache
+
+    # Ensure Composer dependencies are up-to-date
+    # - composer update --no-dev --optimize-autoloader
+
+    # Generate JWT secret if required
+    # - php artisan jwt:secret --force
+
+    # Ensure correct storage permissions for Laravel
+    # - php artisan storage:link
+
+  tags:
+    - dev
+  allow_failure: true

@@ -1,0 +1,74 @@
+# ##################
+# #Basic auth start#
+# ##################
+
+# AuthType Basic
+# AuthName 'Authentication required'
+# # AuthUserFile /var/www/dev9server.com/public_html/m2-module/.htpasswd
+# AuthUserFile /var/www/html/m2-module/.htpasswd
+
+# # Allow access to excluded directories
+# SetEnvIf Request_URI /public/uploads  noauth=1
+# SetEnvIf Request_URI /public/  noauth=1
+# SetEnvIf Request_URI /assets/  noauth=1
+# SetEnvIf Request_URI /page/  noauth=1
+# SetEnvIf Request_URI /home  noauth=1
+# SetEnvIf Request_URI /support  noauth=1
+# SetEnvIf Request_URI /submit-support-form  noauth=1
+
+
+# <RequireAny>
+#   Require env noauth
+#   Require env REDIRECT_noauth
+#   Require valid-user
+# </RequireAny>
+
+# ################
+# #Basic auth end#
+# ################
+
+
+
+<Files ~ "\.(env|config.js|md|gitignore|gitattributes|lock|rta)$">
+Order allow,deny
+Deny from all
+</Files>
+
+
+<FilesMatch "^(constants\.php|.env.example|constants-sample.php|app_android.json|chat.js)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+
+#----------------------------------------------
+# | this code use for remove public directory |
+#----------------------------------------------
+
+
+
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)/$ /$1 [L,R=301]
+RewriteCond %{REQUEST_URI} !(\.ico|\.css|\.js|\.png|\.jpg|\.jpeg|\.gif|\.mp4|\.mov|\.3gp|\.wmv|\.webm|robots\.txt|\.eot|\.svg|\.ttf|\.woff|\.woff2|\.otf|\.pdf|\.wav|\.mp3)$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !^/public1/
+RewriteRule ^(login|uploads|assets|dist|css|js|images|users|ca|favicons|fonts|front|)/(.*)$ public/$1/$2 [L,NC]
+
+
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+Options -Indexes
+</IfModule>
